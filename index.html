@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C++ 20天冲刺打卡表</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0 0 60px;
+    font-family: "微软雅黑", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: #f2f5f9; color: #222; line-height: 1.7;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: linear-gradient(135deg, #1b6ef3, #0b3fa8);
+    color: #fff; padding: 14px 22px 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.18);
+  }
+  header h1 { margin: 0 0 6px; font-size: 20px; letter-spacing: .5px; }
+  .bar-wrap { background: rgba(255,255,255,.28); border-radius: 99px; height: 12px; overflow: hidden; margin-top: 8px; }
+  .bar { height: 100%; width: 0%; background: #7dffb0; transition: width .25s; border-radius: 99px; }
+  .stat { font-size: 13px; opacity: .95; margin-top: 6px; }
+  main { max-width: 900px; margin: 0 auto; padding: 18px 16px; }
+  .phase {
+    margin: 26px 0 10px; padding: 10px 16px; border-radius: 10px;
+    background: #fff; border-left: 6px solid #1b6ef3;
+    font-weight: bold; font-size: 16px; color: #0b3fa8;
+  }
+  .card {
+    background: #fff; border-radius: 12px; padding: 14px 18px 12px;
+    margin-bottom: 14px; box-shadow: 0 1px 4px rgba(20,40,80,.08);
+    border: 1px solid #e3e9f2;
+  }
+  .card.done-all { background: #f3fdf6; border-color: #b6e8c9; }
+  .day-title { font-size: 16px; font-weight: bold; color: #14345e; margin-bottom: 10px; }
+  .day-title .num {
+    display: inline-block; min-width: 26px; text-align: center;
+    background: #1b6ef3; color: #fff; border-radius: 7px;
+    padding: 1px 8px; margin-right: 10px; font-size: 14px;
+  }
+  .row { display: flex; align-items: flex-start; gap: 9px; padding: 5px 0; font-size: 14.5px; }
+  .row input[type=checkbox] { width: 18px; height: 18px; margin-top: 4px; flex: 0 0 auto; cursor: pointer; }
+  .row label { cursor: pointer; flex: 1; }
+  .row.checked label { text-decoration: line-through; color: #8a99ab; }
+  .min { color: #b26a00; font-size: 13px; white-space: nowrap; }
+  .note { color: #c0392b; font-size: 13px; }
+  .tag {
+    display: inline-block; font-size: 12px; padding: 0 6px; border-radius: 5px;
+    background: #eef3ff; color: #1b6ef3; margin-right: 6px;
+  }
+  .tag.hot { background: #ffecec; color: #d63031; }
+  .tip {
+    margin-top: 10px; padding: 9px 12px; border-radius: 8px;
+    background: #fffaf0; border-left: 4px solid #ffb84d; font-size: 13.5px; color: #6b4b00;
+  }
+  .tip b { color: #b26a00; }
+  .wrong { margin-top: 10px; }
+  .wrong span { font-size: 13px; color: #7a8899; }
+  textarea {
+    width: 100%; margin-top: 4px; padding: 7px 9px; font-size: 13.5px;
+    font-family: inherit; border: 1px solid #dbe3ee; border-radius: 8px;
+    resize: vertical; min-height: 42px; color: #333; background: #fbfcfe;
+  }
+  textarea:focus { outline: 2px solid #b9d2ff; background: #fff; }
+  .tpl {
+    background: #fff; border-radius: 12px; padding: 16px 18px;
+    border: 1px solid #e3e9f2; margin-top: 30px;
+  }
+  .tpl h2 { font-size: 17px; color: #0b3fa8; margin: 0 0 12px; }
+  .tpl h3 { font-size: 14.5px; color: #14345e; margin: 18px 0 6px; }
+  pre {
+    background: #0f1b2d; color: #d7e3f4; padding: 12px 14px; border-radius: 9px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+    overflow-x: auto; line-height: 1.6; margin: 0;
+  }
+  footer { text-align: center; font-size: 12.5px; color: #93a1b3; padding: 24px; }
+  @media (max-width: 640px) {
+    header { padding: 10px 12px 10px; }
+    header h1 { font-size: 15px; line-height: 1.5; margin-bottom: 4px; }
+    .stat { font-size: 12px; }
+    .bar-wrap { height: 10px; margin-top: 6px; }
+    main { padding: 12px 10px; }
+    .phase { font-size: 14.5px; padding: 9px 12px; margin: 20px 0 9px; }
+    .card { padding: 12px 12px 10px; border-radius: 10px; margin-bottom: 12px; }
+    .day-title { font-size: 15px; line-height: 1.6; }
+    .day-title .num { min-width: 24px; padding: 0 7px; font-size: 13px; margin-right: 7px; }
+    .row { font-size: 14px; gap: 8px; padding: 7px 0; }
+    .row input[type=checkbox] { width: 22px; height: 22px; margin-top: 1px; }
+    .min { font-size: 12.5px; }
+    .note { font-size: 12.5px; }
+    .tag { font-size: 11.5px; padding: 0 5px; }
+    .tip { font-size: 13px; padding: 8px 10px; line-height: 1.65; }
+    .wrong span { font-size: 12.5px; }
+    textarea { font-size: 16px; min-height: 46px; }
+    .tpl { padding: 14px 12px !important; margin: 22px 10px 0 !important; }
+    .tpl h2 { font-size: 16px; }
+    .tpl h3 { font-size: 14px; }
+    pre { font-size: 12px; padding: 10px 10px; line-height: 1.55; }
+    footer { font-size: 12px; padding: 18px 12px; }
+  }
+  @media print {
+    header { position: static; }
+    .bar-wrap, .bar { display: none; }
+    body { background: #fff; }
+    .card { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🐋 C++ 20 天冲刺打卡表　（协会考核：基础语法 + 排序 / 贪心 + STL）</h1>
+  <div class="stat" id="stat">进度加载中…</div>
+  <div class="bar-wrap"><div class="bar" id="bar"></div></div>
+</header>
+
+<main id="wrap"></main>
+
+<div class="tpl" style="max-width:900px;margin:0 auto;padding:16px;">
+  <h2>📌 模板速查（考前一天就背这一页）</h2>
+  <h3>1. 开头模板（每题都复制它）</h3>
+  <pre id="t1"></pre>
+  <h3>2. sort + 结构体排序（最高频考点）</h3>
+  <pre id="t2"></pre>
+  <h3>3. vector 动态数组</h3>
+  <pre id="t3"></pre>
+  <h3>4. set 去重 / map 计数</h3>
+  <pre id="t4"></pre>
+  <h3>5. 前缀和</h3>
+  <pre id="t5"></pre>
+  <h3>6. 二分查找模板</h3>
+  <pre id="t6"></pre>
+  <h3>7. 贪心：区间调度</h3>
+  <pre id="t7"></pre>
+</div>
+
+<footer>打好勾会自动存在浏览器里，关掉网页也不会丢喵~</footer>
+
+<script>
+var DAYS = [
+  { d:1, ph:'一、把 C 的习惯换成 C++（第 1-6 天）', title:'搭好模板，把 C++ 文件跑起来',
+    vids:[
+      { t:'鹏哥 P1　第一个 C++ 程序', m:13, note:'你已经看过，重看一遍' },
+      { t:'鹏哥 P3　cin 和 cout、名字空间、注释', m:35, note:'重看！这集是全课最关键的一集' }
+    ],
+    code:'新建 template.cpp 放到桌面；用 g++ 编译一次（注意不是 gcc）；跑通「输入两个数，输出它们的和」',
+    drill:'A+B 类题 1 道；再把输出格式改 3 遍（换行 / 空格 / 保留两位小数）',
+    tip:'P4 到 P16 你已经看过了，那些全是 C 语言的内容（数据类型、变量、printf、scanf），你学 C 时早就学过，不用重看。<b>P16 那个 scanf 47 分钟直接跳过</b>，机试我们只用 cin / cout。'
+  },
+  { d:2, title:'string：C++ 的字符串是个省心货',
+    vids:[
+      { t:'鹏哥 P2　函数-字符串-头文件介绍', m:25, note:'重看，重点记 bits/stdc++.h' },
+      { t:'鹏哥 P39　string 字符串认识', m:16, note:'' }
+    ],
+    code:'输入一个名字，输出「你好，XXX」；用 s.size() 输出名字有几个字；把名字倒着打印出来',
+    drill:'字符串长度统计 1 道 + 字符串逆序 1 道',
+    tip:'用 string 以后不用再管结尾那个 <b>\'\\0\'</b>，也不用自己数长度，s.size() 直接告诉你几个字符，比 C 的字符数组省心太多。'
+  },
+  { d:3, title:'string 三件套：输入、长度、拼接',
+    vids:[
+      { t:'鹏哥 P40　string 字符串的输入', m:12, note:'' },
+      { t:'鹏哥 P41　size() 函数', m:13, note:'' },
+      { t:'鹏哥 P43　string 的 push_back 函数', m:6, note:'' },
+      { t:'鹏哥 P44　string 的 += 和 + 运算', m:7, note:'' }
+    ],
+    code:'读入一个单词，在后面拼上「_ok」输出；用 push_back 一个一个字符拼出一整句；统计某个字母出现几次',
+    drill:'字符出现次数统计 1 道 + 字符串拼接 1 道',
+    tip:'拼接直接用 <b>s += "abc"</b>，不用像 C 那样 strcat、strcpy 算半天。'
+  },
+  { d:4, title:'找位置、切一段（很常用）',
+    vids:[
+      { t:'鹏哥 P47　string 的 find 函数', m:21, note:'' },
+      { t:'鹏哥 P48　string 的 substr 函数', m:11, note:'' }
+    ],
+    code:'输入一个句子，找到某个单词第一次出现的位置；把这个单词切出来（substr）打印',
+    drill:'字符串查找 1 道 + 截取子串 1 道',
+    tip:'<b>s.find(x)</b> 找不到返回 string::npos（一个很大的数），判断用 <b>if (s.find(x) == string::npos)</b>，别拿它跟 0 比。'
+  },
+  { d:5, title:'字符串和数字互转 + 读带空格的整句话',
+    vids:[
+      { t:'鹏哥 P50　字符串和数字的互相转换', m:27, note:'' },
+      { t:'鹏哥 P51　含空格字符串的输入技巧', m:9, note:'必学，考试经常踩坑' }
+    ],
+    code:'输入 "123" 转成 int 加 1 再输出；输入 12345 转成字符串输出长度；读一整行带空格的话并输出',
+    drill:'数字反转 1 道 + 读带空格字符串 1 道',
+    tip:'读一整行只能用 <b>getline(cin, s)</b>，用 cin &gt;&gt; s 遇到空格就断，这是机试最常见的冤枉错。'
+  },
+  { d:6, title:'引用 & 和结构体（cmp 的命根子）',
+    vids:[
+      { t:'鹏哥 P62　引用和传引用调用', m:36, note:'必看，写排序规则全靠它' },
+      { t:'鹏哥 P71　结构体类型的声明和变量创建', m:21, note:'C 里学过，快速过一遍' }
+    ],
+    code:'写一个 swap 函数用引用交换两个数（验证原来的值真变了）；定义 struct Student 存姓名、成绩、学号',
+    drill:'引用交换 1 道 + 结构体存数据 1 道',
+    tip:'cmp 函数里写 <b>const Stu &amp;x</b> 意思是「不复制，直接用原来的」，写起来快也不容易超时。P72 结构体特点可以快进，知道 <b>结构体变量.成员名</b> 怎么用就够。'
+  },
+
+  { d:7, ph:'二、STL 猛攻（第 7-13 天）★ 分数全在这几天', title:'STL 是什么？能帮你省多少事',
+    vids:[
+      { t:'STL课 P1　STL 学习介绍', m:3, note:'' },
+      { t:'STL课 P2　STL 的基本概念', m:15, note:'' },
+      { t:'STL课 P3　容器的分类介绍', m:8, note:'' },
+      { t:'鹏哥 P88　算法竞赛中的时间限制和空间限制', m:6, note:'6 分钟，很有用' }
+    ],
+    code:'什么都不用写，把「容器 = 别人写好的、拿来就能用的数据结构」这句话记住',
+    drill:'不刷题，把 template.cpp 再敲一遍',
+    tip:'<b>STL 就是别人提前写好的一套工具箱</b>：要排序有 sort，要变长数组有 vector，要去重有 set。考试不考你造工具，只考你会不会用工具。'
+  },
+  { d:8, title:'sort 排序 ★ 全 20 天最重要的一天',
+    vids:[
+      { t:'鹏哥 P75　sort 函数和结构体的排序', m:46, note:'★ 最重要的一集，看完必须立刻手写' }
+    ],
+    code:'四个都写一遍：① sort 排从 0 开始的数组 ② sort 排从 1 开始的数组（a+1, a+n+1）③ 结构体按成绩降序 ④ 成绩相同按学号升序',
+    drill:'排序类题 3 道（单关键字 + 多关键字 + 字符串排序）',
+    tip:'记死这两句：数组从 0 存 → <b>sort(a, a+n)</b>；数组从 1 存 → <b>sort(a+1, a+n+1)</b>。少写一个 1 就是全部答案错。<b>sort 默认从小到大</b>，想从大到小要么写 cmp，要么用 greater&lt;int&gt;()。'
+  },
+  { d:9, title:'vector：会自动变长的数组',
+    vids:[
+      { t:'STL课 P4　vector 的构造方法', m:15, note:'' },
+      { t:'STL课 P5　vector 的赋值', m:19, note:'' },
+      { t:'STL课 P6　vector 的大小', m:11, note:'' }
+    ],
+    code:'存 n 个数进 vector，push_back 加数、size() 看几个、clear() 清空、pop_back() 删末尾',
+    drill:'vector 基础题 2 道',
+    tip:'视频里讲了 5 种构造方法，<b>只用记住一种：vector&lt;int&gt; v;</b> 就够考试用了，别浪费时间背。'
+  },
+  { d:10, title:'取元素 + 迭代器（begin / end 到底是啥）',
+    vids:[
+      { t:'STL课 P7　vector 元素的访问方式', m:18, note:'' },
+      { t:'STL课 P9　迭代器的基本概念', m:24, note:'听懂思路就行，不用记底层' }
+    ],
+    code:'同一份数据用三种方式遍历：下标 for、迭代器 for、范围 for（for auto x : v）；用 sort(v.begin(), v.end()) 排序',
+    drill:'vector 遍历题 2 道',
+    tip:'<b>v.begin() 指第一个数，v.end() 指最后一个数的后一格</b>，所以 sort(v.begin(), v.end()) 正好把全部排了。P11 和 P12（迭代器失效那集 37 分钟）考试不用，跳过。'
+  },
+  { d:11, title:'set：自动去重 + 自动排序的集合',
+    vids:[
+      { t:'STL课 P29　set 容器的基本概念', m:11, note:'' },
+      { t:'STL课 P30　set 容器的插入和迭代器', m:6, note:'' },
+      { t:'STL课 P35　set 容器的查找', m:18, note:'' }
+    ],
+    code:'输入 n 个可能有重复的数，放进 set 后输出去重升序结果；用 s.count(x) 判断某个数在不在',
+    drill:'去重题 2 道 + 存在性判断 2 道',
+    tip:'set 里的数<b>永远不重复、永远从小到大自动排好</b>，insert 进去就完事。判断在不在用 <b>s.count(x)</b>，返回 1 就是在，0 就是不在。'
+  },
+  { d:12, title:'map + pair：键值对和成对数据',
+    vids:[
+      { t:'STL课 P36　pair 对组', m:14, note:'' },
+      { t:'STL课 P37　map 容器的基本概念', m:6, note:'' },
+      { t:'STL课 P38　map 容器元素的插入', m:32, note:'' },
+      { t:'STL课 P40　map 容器获取键所对应的值', m:8, note:'' }
+    ],
+    code:'统计每个单词出现几次（m[s]++）；遍历 map 输出；用 vector<pair<int,string>> 排序',
+    drill:'词频统计 2 道 + pair 排序 1 道',
+    tip:'最大坑：<b>m[key] 一读就会偷偷插入一个空值</b>，所以判断在不在必须用 <b>m.count(key)</b>，不能写 if (m[key] == 0)。遍历写 for (auto &amp;p : m)，p.first 是键、p.second 是值。'
+  },
+  { d:13, title:'栈和队列：括号匹配、排队问题',
+    vids:[
+      { t:'STL课 P24　stack 容器的入栈和出栈', m:16, note:'' },
+      { t:'STL课 P26　stack 容器的大小', m:6, note:'' },
+      { t:'STL课 P27　queue 容器的入队和出队', m:11, note:'' },
+      { t:'STL课 P28　queue 容器的其他操作', m:13, note:'' }
+    ],
+    code:'用 stack 写括号匹配（遇到左括号压栈，右括号弹栈）；用 queue 模拟排队',
+    drill:'括号匹配 1 道 + 队列模拟 1 道',
+    tip:'<b>栈 = 先进后出</b>（像叠盘子），<b>队列 = 先进先出</b>（像排队买饭）。蓝桥杯特别爱考括号匹配。'
+  },
+
+  { d:14, ph:'三、算法 + 刷题实战（第 14-18 天）', title:'前缀和：把「每次重新加一遍」变成一步出结果',
+    vids:[
+      { t:'鹏哥 P120　一维前缀和', m:21, note:'' }
+    ],
+    code:'输入 n 个数和 m 次询问，每次给 l、r，用 O(1) 输出区间和',
+    drill:'前缀和题 3 道（今天是刷题主力日）',
+    tip:'前缀和数组从 <b>1 开始存</b>：sum[i] = sum[i-1] + a[i]；区间 [l, r] 的和 = <b>sum[r] - sum[l-1]</b>。为什么要减 l-1 而不是 l？自己拿纸画一遍就懂了。'
+  },
+  { d:15, title:'差分：一堆区间加同一个数',
+    vids:[
+      { t:'鹏哥 P122　一维差分', m:29, note:'' }
+    ],
+    code:'区间 [l, r] 全部加 c，做好多次，最后一次性输出所有数（差分经典题）',
+    drill:'差分题 2 道 + 复习前缀和 1 道',
+    tip:'差分是前缀和反过来用：<b>a[l] += c; a[r+1] -= c;</b>，最后求一遍前缀和就得到答案。'
+  },
+  { d:16, title:'二分查找：猜数字的最优策略',
+    vids:[
+      { t:'鹏哥 P125　二分算法原理与模板', m:62, note:'可以分上午、下午两段看' }
+    ],
+    code:'背熟二分模板，写「找第一个 ≥ x 的位置」和「猜数字游戏」',
+    drill:'二分题 3 道',
+    tip:'二分要背的是那个 while 的写法，<b>背不住就自己在纸上把 1 到 10 手动走一遍</b>，走过一次就忘不掉了。'
+  },
+  { d:17, title:'贪心：每一步都选眼前最好的',
+    vids:[
+      { t:'鹏哥 P127　贪心算法的简介', m:29, note:'' },
+      { t:'鹏哥 P128　货仓选址', m:20, note:'经典贪心' }
+    ],
+    code:'区间调度（n 个活动最多能参加几个）；排队打水',
+    drill:'贪心题 3 道',
+    tip:'贪心题第一步永远是问自己：<b>按什么排序？</b> 排序关键字想对了，题就做完一半。想不出来超过 30 分钟就看题解，看懂后自己重写一遍，别死磕一天。'
+  },
+  { d:18, title:'收网：综合刷题 + 错题重写',
+    vids:[
+      { t:'鹏哥 P129　最大子段和（贪心视角，选看）', m:18, note:'可选，不看也行' }
+    ],
+    code:'把前 17 天做错的题全部重写一遍，重点重写：sort+cmp、map 计数、前缀和',
+    drill:'综合题 4-5 道，优先刷「排序」「贪心」题单',
+    tip:'<b>错题比新题值钱</b>。错过的题再错一次，就是考场上的分数。今天开始把错题原因写进下面那个框里。'
+  },
+
+  { d:19, ph:'四、考前模拟（第 19-20 天）', title:'限时模拟（第一套）',
+    vids:[],
+    code:'找一套历年新生赛 / 蓝桥杯真题，严格计时 2-3 小时做完，中途不许查资料、不许看题解',
+    drill:'一整套模拟卷（打完整场）',
+    tip:'模拟时最重要的不是分数，是练<b>时间分配</b>：先扫一遍所有题，先做会做的，卡住的立刻跳过。'
+  },
+  { d:20, title:'模拟复盘 + 背模板，不学新东西',
+    vids:[],
+    code:'把下面「模板速查」7 段全部默写一遍；复盘昨天模拟每道题为什么错',
+    drill:'第二套模拟（或只做昨天错的题）',
+    tip:'<b>考前一天绝对不学新知识</b>，把会的背熟、睡好觉。机试最容易丢的分不是难题，是大数组放 main 里爆栈、endl 超时、忘了取消同步这几件小事。'
+  }
+];
+
+var TIPS = [
+  { h:'1. 开头模板（每题都复制它）', code:
+'#include <bits/stdc++.h>\n' +
+'using namespace std;\n' +
+'const int N = 1e5 + 10;   // 大数组一定放全局，不能放 main 里（会爆栈）\n' +
+'int a[N];\n' +
+'\n' +
+'int main(){\n' +
+'    ios::sync_with_stdio(false);   // 取消同步，读入快很多\n' +
+'    cin.tie(0);                    // 这两个必须写在 main 第一行\n' +
+'    int n;\n' +
+'    while (cin >> n) {             // 多组输入的标准写法\n' +
+'        // 处理这一组\n' +
+'    }\n' +
+'    return 0;\n' +
+'}' },
+  { h:'2. sort + 结构体排序（最高频考点）', code:
+'struct Stu { string name; int score, id; };\n' +
+'\n' +
+'bool cmp(const Stu &x, const Stu &y) {\n' +
+'    if (x.score != y.score) return x.score > y.score;  // 成绩高的在前（降序）\n' +
+'    if (x.id    != y.id)    return x.id    < y.id;     // 同分：学号小的在前（升序）\n' +
+'    return x.name < y.name;                            // 还相同：名字字典序\n' +
+'}\n' +
+'\n' +
+'sort(v.begin(), v.end(), cmp);   // 对 vector 排序\n' +
+'sort(a + 1, a + n + 1, cmp);     // 对从 1 开始的数组排序\n' +
+'sort(a, a + n);                  // 对从 0 开始的数组排序（默认小到大）' },
+  { h:'3. vector 动态数组', code:
+'vector<int> v;\n' +
+'v.push_back(3);        // 尾部加一个\n' +
+'v.size();              // 有几个元素\n' +
+'v.pop_back();          // 删掉最后一个\n' +
+'v.clear();             // 清空\n' +
+'sort(v.begin(), v.end());          // 排序\n' +
+'for (int i = 0; i < (int)v.size(); i++) cout << v[i] << \' \';\n' +
+'for (auto x : v) cout << x << \' \';   // 范围 for，更省事' },
+  { h:'4. set 去重 / map 计数', code:
+'set<int> s;\n' +
+'s.insert(5);                 // 自动去重、自动升序\n' +
+'if (s.count(5)) cout << "在";\n' +
+'for (auto x : s) cout << x << \' \';\n' +
+'\n' +
+'map<string, int> m;\n' +
+'m["apple"]++;                        // 计数最常用写法\n' +
+'if (m.count("apple")) { }            // 判断在不在：用 count，别用 m[key]==0\n' +
+'for (auto &p : m) cout << p.first << \' \' << p.second << \'\\n\';' },
+  { h:'5. 前缀和', code:
+'int a[N], sum[N];\n' +
+'for (int i = 1; i <= n; i++) sum[i] = sum[i-1] + a[i];\n' +
+'\n' +
+'// 区间 [l, r] 的和，O(1) 出结果\n' +
+'cout << sum[r] - sum[l-1];' },
+  { h:'6. 二分查找模板', code:
+'// 找第一个 >= x 的位置\n' +
+'int l = 1, r = n, ans = -1;\n' +
+'while (l <= r) {\n' +
+'    int mid = (l + r) / 2;\n' +
+'    if (a[mid] >= x) { ans = mid; r = mid - 1; }\n' +
+'    else l = mid + 1;\n' +
+'}' },
+  { h:'7. 贪心：区间调度（按结束时间排）', code:
+'bool cmpEnd(const pair<int,int> &p, const pair<int,int> &q) {\n' +
+'    return p.second < q.second;   // 谁先结束谁排前面\n' +
+'}\n' +
+'\n' +
+'sort(v.begin(), v.end(), cmpEnd);\n' +
+'int cnt = 0, last = -1000000000;\n' +
+'for (auto &p : v) {\n' +
+'    if (p.first >= last) {        // 上一个结束之后才开始，就能参加\n' +
+'        cnt++;\n' +
+'        last = p.second;\n' +
+'    }\n' +
+'}' }
+];
+
+var STORE = 'cpp20_daka_v1';
+var state = {};
+try { state = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { state = {}; }
+function save(){ try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
+
+var wrap = document.getElementById('wrap');
+var lastPh = '';
+var allIds = [];
+
+DAYS.forEach(function(day){
+  if (day.ph && day.ph !== lastPh) {
+    lastPh = day.ph;
+    var ph = document.createElement('div');
+    ph.className = 'phase';
+    ph.textContent = day.ph;
+    wrap.appendChild(ph);
+  }
+  var card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card' + day.d;
+
+  var ti = document.createElement('div');
+  ti.className = 'day-title';
+  var num = document.createElement('span');
+  num.className = 'num';
+  num.textContent = 'D' + day.d;
+  ti.appendChild(num);
+  ti.appendChild(document.createTextNode(day.title));
+  card.appendChild(ti);
+
+  function addRow(id, tagText, text, minText, noteText, hot) {
+    var row = document.createElement('div');
+    row.className = 'row';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.id = id;
+    cb.checked = !!state[id];
+    cb.setAttribute('data-day', day.d);
+    allIds.push(id);
+    var lb = document.createElement('label');
+    lb.setAttribute('for', id);
+    var tg = document.createElement('span');
+    tg.className = 'tag' + (hot ? ' hot' : '');
+    tg.textContent = tagText;
+    lb.appendChild(tg);
+    lb.appendChild(document.createTextNode(text));
+    if (minText) {
+      var m = document.createElement('span');
+      m.className = 'min';
+      m.textContent = '　' + minText;
+      lb.appendChild(m);
+    }
+    if (noteText) {
+      var n = document.createElement('span');
+      n.className = 'note';
+      n.textContent = '　（' + noteText + '）';
+      lb.appendChild(n);
+    }
+    row.appendChild(cb);
+    row.appendChild(lb);
+    if (cb.checked) row.classList.add('checked');
+    card.appendChild(row);
+    return row;
+  }
+
+  (day.vids || []).forEach(function(v, i){
+    addRow('d' + day.d + 'v' + i, '看视频', v.t, v.m + ' 分钟', v.note, v.note && v.note.indexOf('重看') === 0);
+  });
+  if (day.code)  addRow('d' + day.d + 'c', '动手敲', day.code, '', '', false);
+  if (day.drill) addRow('d' + day.d + 'x', '刷题', day.drill, '', '', false);
+
+  if (day.tip) {
+    var tip = document.createElement('div');
+    tip.className = 'tip';
+    tip.innerHTML = day.tip;
+    card.appendChild(tip);
+  }
+
+  var w = document.createElement('div');
+  w.className = 'wrong';
+  var ws = document.createElement('span');
+  ws.textContent = '📝 今天卡住的 / 做错的（写一句原因就够）：';
+  w.appendChild(ws);
+  var ta = document.createElement('textarea');
+  ta.id = 'e' + day.d;
+  ta.placeholder = '例：sort 忘了写 a+1 导致从 1 存的时候错位';
+  ta.value = state['e' + day.d] || '';
+  w.appendChild(ta);
+  card.appendChild(w);
+
+  wrap.appendChild(card);
+});
+
+// 填充模板速查区
+TIPS.forEach(function(t, i){
+  document.getElementById('t' + (i+1)).textContent = t.code;
+});
+
+function refresh(){
+  var total = allIds.length, done = 0;
+  allIds.forEach(function(id){
+    var cb = document.getElementById(id);
+    if (cb && cb.checked) done++;
+    var row = cb ? cb.parentNode : null;
+    if (row) { if (cb.checked) row.classList.add('checked'); else row.classList.remove('checked'); }
+  });
+  DAYS.forEach(function(day){
+    var ids = allIds.filter(function(id){ var c2 = document.getElementById(id); return c2 && c2.getAttribute('data-day') === String(day.d); });
+    var card = document.getElementById('card' + day.d);
+    var allDone = ids.length > 0 && ids.every(function(id){
+      var cb = document.getElementById(id); return cb && cb.checked;
+    });
+    if (card) { if (allDone) card.classList.add('done-all'); else card.classList.remove('done-all'); }
+  });
+  var pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('bar').style.width = pct + '%';
+  document.getElementById('stat').textContent = '总进度：' + done + ' / ' + total + ' 项（' + pct + '%）　每天视频不超过 35 分钟，敲代码至少 90 分钟';
+}
+
+wrap.addEventListener('change', function(e){
+  var t = e.target;
+  if (t && t.type === 'checkbox' && t.id) {
+    state[t.id] = t.checked ? 1 : 0;
+    save();
+    refresh();
+  }
+});
+wrap.addEventListener('input', function(e){
+  var t = e.target;
+  if (t && t.tagName === 'TEXTAREA' && t.id) {
+    state[t.id] = t.value;
+    save();
+  }
+});
+
+refresh();
+</script>
+</body>
+</html>
