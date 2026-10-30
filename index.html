@@ -43,6 +43,7 @@
   .row input[type=checkbox] { width: 18px; height: 18px; margin-top: 4px; flex: 0 0 auto; cursor: pointer; }
   .row label { cursor: pointer; flex: 1; }
   .row.checked label { text-decoration: line-through; color: #8a99ab; }
+  .date { display: inline-block; background: #2b8a3e; color: #fff; border-radius: 6px; padding: 0 8px; font-size: 12.5px; margin-left: 8px; vertical-align: 2px; }
   .min { color: #b26a00; font-size: 13px; white-space: nowrap; }
   .note { color: #c0392b; font-size: 13px; }
   .tag {
@@ -109,7 +110,7 @@
 </head>
 <body>
 <header>
-  <h1>🐋 C++ 20 天冲刺打卡表　（协会考核：基础语法 + 排序 / 贪心 + STL）</h1>
+  <h1>🐋 C++ 冲刺打卡表　｜　 11/8 测试　｜　 冲刺 9 天（10/31 → 11/8）</h1>
   <div class="stat" id="stat">进度加载中…</div>
   <div class="bar-wrap"><div class="bar" id="bar"></div></div>
 </header>
@@ -138,168 +139,70 @@
 
 <script>
 var DAYS = [
-  { d:1, ph:'一、把 C 的习惯换成 C++（第 1-6 天）', title:'搭好模板，把 C++ 文件跑起来',
-    vids:[
-      { t:'鹏哥 P1　第一个 C++ 程序', m:13, note:'你已经看过，重看一遍' },
-      { t:'鹏哥 P3　cin 和 cout、名字空间、注释', m:35, note:'重看！这集是全课最关键的一集' }
-    ],
-    code:'新建 template.cpp 放到桌面；用 g++ 编译一次（注意不是 gcc）；跑通「输入两个数，输出它们的和」',
-    drill:'A+B 类题 1 道；再把输出格式改 3 遍（换行 / 空格 / 保留两位小数）',
-    tip:'P4 到 P16 你已经看过了，那些全是 C 语言的内容（数据类型、变量、printf、scanf），你学 C 时早就学过，不用重看。<b>P16 那个 scanf 47 分钟直接跳过</b>，机试我们只用 cin / cout。'
+  { d:1, ph:'冲刺 9 天（10/31 → 11/8）★ 基础语法 + 排序 + 贪心，三块都要稳', date:'10/31 周六', title:'基础语法回炉：顺序结构 + 分支结构 + 循环',
+    vids:[],
+    code:'今天不学新东西，只刷题把旧知识捡回来：输入输出 2 道 + if/else 2 道 + for/while 2 道',
+    drill:'基础题 6 道（在 OJ 上按「顺序结构 / 分支结构 / 循环」筛）',
+    tip:'<b>顺序结构</b> = 代码从上往下一行行执行，说白了就是「先输入、再算、最后输出」；<b>分支结构</b> = if / else if / else 和 switch。这两块是考核里说的「基础语法」，你学 C 时全写过，今天只是把手感和手速找回来，别当成新知识。哪个概念真忘了，鹏哥课 P18(if-else) / P22(switch) / P23-P24(while、for) 各十几分钟，<b>只挑忘的那一个看</b>。'
   },
-  { d:2, title:'string：C++ 的字符串是个省心货',
+  { d:2, date:'11/1 周日', title:'sort 排序 ★ 最重要的一天',
     vids:[
-      { t:'鹏哥 P2　函数-字符串-头文件介绍', m:25, note:'重看，重点记 bits/stdc++.h' },
-      { t:'鹏哥 P39　string 字符串认识', m:16, note:'' }
-    ],
-    code:'输入一个名字，输出「你好，XXX」；用 s.size() 输出名字有几个字；把名字倒着打印出来',
-    drill:'字符串长度统计 1 道 + 字符串逆序 1 道',
-    tip:'用 string 以后不用再管结尾那个 <b>\'\\0\'</b>，也不用自己数长度，s.size() 直接告诉你几个字符，比 C 的字符数组省心太多。'
-  },
-  { d:3, title:'string 三件套：输入、长度、拼接',
-    vids:[
-      { t:'鹏哥 P40　string 字符串的输入', m:12, note:'' },
-      { t:'鹏哥 P41　size() 函数', m:13, note:'' },
-      { t:'鹏哥 P43　string 的 push_back 函数', m:6, note:'' },
-      { t:'鹏哥 P44　string 的 += 和 + 运算', m:7, note:'' }
-    ],
-    code:'读入一个单词，在后面拼上「_ok」输出；用 push_back 一个一个字符拼出一整句；统计某个字母出现几次',
-    drill:'字符出现次数统计 1 道 + 字符串拼接 1 道',
-    tip:'拼接直接用 <b>s += "abc"</b>，不用像 C 那样 strcat、strcpy 算半天。'
-  },
-  { d:4, title:'找位置、切一段（很常用）',
-    vids:[
-      { t:'鹏哥 P47　string 的 find 函数', m:21, note:'' },
-      { t:'鹏哥 P48　string 的 substr 函数', m:11, note:'' }
-    ],
-    code:'输入一个句子，找到某个单词第一次出现的位置；把这个单词切出来（substr）打印',
-    drill:'字符串查找 1 道 + 截取子串 1 道',
-    tip:'<b>s.find(x)</b> 找不到返回 string::npos（一个很大的数），判断用 <b>if (s.find(x) == string::npos)</b>，别拿它跟 0 比。'
-  },
-  { d:5, title:'字符串和数字互转 + 读带空格的整句话',
-    vids:[
-      { t:'鹏哥 P50　字符串和数字的互相转换', m:27, note:'' },
-      { t:'鹏哥 P51　含空格字符串的输入技巧', m:9, note:'必学，考试经常踩坑' }
-    ],
-    code:'输入 "123" 转成 int 加 1 再输出；输入 12345 转成字符串输出长度；读一整行带空格的话并输出',
-    drill:'数字反转 1 道 + 读带空格字符串 1 道',
-    tip:'读一整行只能用 <b>getline(cin, s)</b>，用 cin &gt;&gt; s 遇到空格就断，这是机试最常见的冤枉错。'
-  },
-  { d:6, title:'引用 & 和结构体（cmp 的命根子）',
-    vids:[
-      { t:'鹏哥 P62　引用和传引用调用', m:36, note:'必看，写排序规则全靠它' },
-      { t:'鹏哥 P71　结构体类型的声明和变量创建', m:21, note:'C 里学过，快速过一遍' }
-    ],
-    code:'写一个 swap 函数用引用交换两个数（验证原来的值真变了）；定义 struct Student 存姓名、成绩、学号',
-    drill:'引用交换 1 道 + 结构体存数据 1 道',
-    tip:'cmp 函数里写 <b>const Stu &amp;x</b> 意思是「不复制，直接用原来的」，写起来快也不容易超时。P72 结构体特点可以快进，知道 <b>结构体变量.成员名</b> 怎么用就够。'
-  },
-
-  { d:7, ph:'二、STL 猛攻（第 7-11 天）★ 分数全在这几天', title:'STL 是什么？先把 vector 拿下',
-    vids:[
-      { t:'新主课 BV1L8411y7th　算法竞赛常用 STL 用法（第 1 段，约 40 分钟）', m:40, note:'从头看，看到讲完 vector 就暂停' },
-      { t:'鹏哥 P88　算法竞赛中的时间限制和空间限制', m:6, note:'' }
-    ],
-    code:'vector 五件事全敲一遍：push_back 加数、size 看个数、pop_back 删末尾、clear 清空、v[i] 取第 i 个',
-    drill:'vector 基础题 2 道（存数 + 排序 + 输出）',
-    tip:'这节课的简介写的是「WHUT ACM 集训队新生讲课」，听众就是刚学完 C 的你，比那种工程课对味得多。<b>看到讲完 vector 立刻暂停去敲</b>，别一口气刷完整集，刷完啥也记不住。'
-  },
-  { d:8, title:'sort 排序 ★ 全 20 天最重要的一天',
-    vids:[
-      { t:'鹏哥 P75　sort 函数和结构体的排序', m:46, note:'★ 最重要的一集，看完必须立刻手写' }
+      { t:'鹏哥 P75　sort 函数和结构体的排序', m:46, note:'★ 今天只干这一件事，看完立刻手写' }
     ],
     code:'四个都写一遍：① sort 排从 0 开始的数组 ② sort 排从 1 开始的数组（a+1, a+n+1）③ 结构体按成绩降序 ④ 成绩相同按学号升序',
-    drill:'排序类题 3 道（单关键字 + 多关键字 + 字符串排序）',
-    tip:'记死这两句：数组从 0 存 → <b>sort(a, a+n)</b>；数组从 1 存 → <b>sort(a+1, a+n+1)</b>。少写一个 1 就是全部答案错。<b>sort 默认从小到大</b>，想从大到小要么写 cmp，要么用 greater&lt;int&gt;()。'
+    drill:'排序类题 3 道（单关键字 / 多关键字 / 字符串排序）',
+    tip:'vector 你说已经学会了，这天不排 vector。记死两句：数组从 0 存 → <b>sort(a, a+n)</b>；从 1 存 → <b>sort(a+1, a+n+1)</b>。冒泡/选择排序你 C 里应该写过，知道「两层循环，每次把最大或最小换到末尾」就够了，<b>考试别手写，用 sort</b>。想在考试里从大到小排，写 cmp 或用 greater&lt;int&gt;()。'
   },
-  { d:9, title:'继续往下看：set 和 map',
-    vids:[
-      { t:'新主课 第 2 段（接着看到讲完 set 和 map，约 45 分钟）', m:45, note:'讲完一个容器就暂停敲一遍' }
-    ],
-    code:'set 去重：一堆数放进去，输出去重升序；map 计数：统计每个单词出现几次（m[s]++）',
+  { d:3, date:'11/2 周一', title:'set 和 map：鹏哥课没有这章，直接看模板敲',
+    vids:[],
+    code:'set 去重：一堆数打进 set，输出自动升序；map 计数：统计每个单词出现几次（m[s]++）；用 s.count(x) 判断某个数在不在',
     drill:'去重题 2 道 + 词频统计 2 道',
-    tip:'set 里的数<b>永远不重复、永远自动从小到大</b>。map 最大的坑：<b>m[key] 一读就会偷偷插入一个空值</b>，判断在不在必须用 m.count(key)，不能写 if (m[key] == 0)。'
+    tip:'<b>鹏哥这 186 集里没有 set / map 这一章</b>，所以这天不排视频，直接看页面最下面「模板速查」第 4 段敲。三个必记：set 自动去重 + 自动升序；<b>m[key] 一读会偷偷插入空值</b>，判断在不在要用 m.count(key)；遍历写 for (auto &amp;p : m)，p.first 是键、p.second 是值。'
   },
-  { d:10, title:'把新主课看完：栈、队列、pair',
+  { d:4, date:'11/3 周二', title:'栈和队列：括号匹配是高频题',
     vids:[
-      { t:'新主课 第 3 段（剩下全部看完，约 40 分钟）', m:40, note:'看完就收工，不用再找别的视频' }
+      { t:'鹏哥 P97　栈和 stack', m:24, note:'' },
+      { t:'鹏哥 P98　队列和 queue', m:21, note:'' }
     ],
-    code:'用 stack 写括号匹配；用 queue 模拟排队；用 pair 存（成绩，姓名）并排序',
-    drill:'括号匹配 1 道 + 队列模拟 1 道 + pair 排序 1 道',
+    code:'用 stack 写括号匹配（左括号压栈，右括号弹出来比对）；用 queue 模拟排队',
+    drill:'括号匹配 1 道 + 队列模拟 1 道',
     tip:'<b>栈 = 先进后出</b>（像叠盘子），<b>队列 = 先进先出</b>（像排队买饭）。蓝桥杯特别爱考括号匹配。'
   },
-  { d:11, title:'STL 实战日：不看视频，全靠手',
-    vids:[],
-    code:'不看笔记，把 vector / set / map / stack / queue 各写一段最小代码（每个 5 行以内），写完对照下面「模板速查」检查',
-    drill:'综合刷题 4-5 道（去重、计数、括号、排序混着来）',
-    tip:'今天不许看新视频。哪个容器写不出来，就回去把新主课里对应那 5 分钟重看一遍，然后立刻再写一遍。'
+  { d:5, date:'11/4 周三', title:'贪心入门：每一步都选眼前最好的',
+    vids:[
+      { t:'鹏哥 P127　贪心算法的简介', m:29, note:'' }
+    ],
+    code:'区间调度（n 个活动最多能参加几个）；排队打水。写之前先想清楚：按什么排序？',
+    drill:'贪心题 3 道',
+    tip:'贪心题第一步永远问自己：<b>按什么排序？</b> 排序关键字想对了，题就做完一半。想不出来超过 30 分钟就看题解，看懂后自己重写。'
   },
-
-  { d:12, ph:'三、算法 + 刷题实战（第 12-18 天）', title:'前缀和：把「每次重新加一遍」变成一步出结果',
+  { d:6, date:'11/5 周四', title:'贪心实战：货仓选址',
+    vids:[
+      { t:'鹏哥 P128　货仓选址', m:20, note:'经典贪心题' }
+    ],
+    code:'把昨天的贪心题重写一遍；自己写一遍货仓选址（按位置排序后取中位数）',
+    drill:'贪心题 3 道（含重写昨天的）',
+    tip:'贪心代码都很短，难的是想不到。<b>看懂题解后必须自己手敲一遍</b>，抄一遍等于没学。'
+  },
+  { d:7, date:'11/6 周五', title:'前缀和 + 综合刷题',
     vids:[
       { t:'鹏哥 P120　一维前缀和', m:21, note:'' }
     ],
-    code:'输入 n 个数和 m 次询问，每次给 l、r，用 O(1) 输出区间和',
-    drill:'前缀和题 3 道（今天是刷题主力日）',
-    tip:'前缀和数组从 <b>1 开始存</b>：sum[i] = sum[i-1] + a[i]；区间 [l, r] 的和 = <b>sum[r] - sum[l-1]</b>。为什么减 l-1 而不是 l？自己拿纸画一遍就懂了。'
+    code:'输入 n 个数和 m 次询问 [l, r]，用前缀和 O(1) 输出区间和',
+    drill:'前缀和 2 道 + 排序/贪心 2 道',
+    tip:'前缀和从 <b>1 开始存</b>：sum[i] = sum[i-1] + a[i]；区间 [l, r] 的和 = <b>sum[r] - sum[l-1]</b>。拿纸画一遍为什么是减 l-1 而不是减 l。'
   },
-  { d:13, title:'差分：一堆区间加同一个数',
-    vids:[
-      { t:'鹏哥 P122　一维差分', m:29, note:'' }
-    ],
-    code:'区间 [l, r] 全部加 c，做好多次，最后一次性输出所有数（差分经典题）',
-    drill:'差分题 2 道 + 复习前缀和 1 道',
-    tip:'差分是前缀和反过来用：<b>a[l] += c; a[r+1] -= c;</b>，最后求一遍前缀和就得到答案。'
-  },
-  { d:14, title:'二分查找：猜数字的最优策略',
-    vids:[
-      { t:'鹏哥 P125　二分算法原理与模板', m:62, note:'可以分上午、下午两段看' }
-    ],
-    code:'背熟二分模板，写「找第一个 >= x 的位置」和「猜数字游戏」',
-    drill:'二分题 3 道',
-    tip:'二分要背的是那个 while 的写法，<b>背不住就自己在纸上把 1 到 10 手动走一遍</b>，走过一次就忘不掉了。'
-  },
-  { d:15, title:'贪心：每一步都选眼前最好的',
-    vids:[
-      { t:'鹏哥 P127　贪心算法的简介', m:29, note:'' },
-      { t:'鹏哥 P128　货仓选址', m:20, note:'经典贪心' }
-    ],
-    code:'区间调度（n 个活动最多能参加几个）；排队打水',
-    drill:'贪心题 3 道',
-    tip:'贪心题的第一步永远是问自己：<b>按什么排序？</b> 排序关键字想对了，题就做完一半。想不出来超过 30 分钟就看题解，看懂后自己重写一遍，别死磕一整天。'
-  },
-  { d:16, title:'贪心实战 + 排序综合',
-    vids:[
-      { t:'鹏哥 P129　最大子段和（贪心视角，选看）', m:18, note:'可选，不看也行' }
-    ],
-    code:'把贪心题重写一遍，重点练「排序关键字到底怎么定」',
-    drill:'贪心 + 排序混合 4-5 道',
-    tip:'<b>贪心代码都很短，难的是想不到。</b> 卡住超过 30 分钟就看题解，看懂后自己重写，别花一天死磕一道题。'
-  },
-  { d:17, title:'综合刷题 + 错题回炉',
+  { d:8, date:'11/7 周六', title:'限时模拟（考试前一天）',
     vids:[],
-    code:'把前 16 天做错的题全部重写一遍，重点重写：sort + cmp、map 计数、前缀和',
-    drill:'综合题 4-5 道，优先刷「排序」「贪心」题单',
-    tip:'<b>错题比新题值钱</b>。错过的题再错一次，就是考场上的分数。把错题原因写进下面那个框里。'
+    code:'找一套真题，严格计时 2-3 小时做完，不许查资料、不许看题解',
+    drill:'一整套模拟卷 + 复盘每道错题',
+    tip:'练的是<b>时间分配</b>：先扫一遍所有题，先做会做的，卡住的立刻跳。今天做错的题，明天考前再看一眼。'
   },
-  { d:18, title:'收网：默写模板 + 查漏',
+  { d:9, date:'11/8 周日 · 考试', title:'考试日：只看模板，绝不学新东西',
     vids:[],
-    code:'把下面「模板速查」7 段全部默写一遍；写不出来的地方，回去把对应那天的视频重看 5 分钟',
-    drill:'错题重写 3 道 + 模板默写',
-    tip:'从今天开始做减法：<b>不学新东西，只补漏洞</b>。默写不出来的地方，就是你的漏洞清单。'
-  },
-
-  { d:19, ph:'四、考前模拟（第 19-20 天）', title:'限时模拟（第一套）',
-    vids:[],
-    code:'找一套历年新生赛 / 蓝桥杯真题，严格计时 2-3 小时做完，中途不许查资料、不许看题解',
-    drill:'一整套模拟卷（打完整场）',
-    tip:'模拟时最重要的不是分数，是练<b>时间分配</b>：先扫一遍所有题，先做会做的，卡住的立刻跳过。'
-  },
-  { d:20, title:'模拟复盘 + 背模板，不学新东西',
-    vids:[],
-    code:'第二套模拟（或只重做昨天错的题）；再把下面「模板速查」过一遍',
-    drill:'模拟复盘 + 模板默写',
-    tip:'<b>考前一天绝对不学新知识</b>，把会的背熟、睡好觉。机试最容易丢的分不是难题，是大数组放 main 里爆栈、endl 超时、忘了取消同步这几件小事。'
+    code:'考前 30 分钟：把下面「模板速查」过一遍，重点看 sort + cmp、map 计数、前缀和',
+    drill:'进场考试',
+    tip:'<b>考前一小时绝对不学新知识</b>。最容易丢分的不是难题，是大数组放 main 里爆栈、endl 超时、忘了取消同步这几件小事。'
   }
 ];
 
@@ -379,7 +282,7 @@ var TIPS = [
 '}' }
 ];
 
-var STORE = 'cpp20_daka_v2';
+var STORE = 'cpp20_daka_v4';
 var state = {};
 try { state = JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { state = {}; }
 function save(){ try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
@@ -407,6 +310,7 @@ DAYS.forEach(function(day){
   num.textContent = 'D' + day.d;
   ti.appendChild(num);
   ti.appendChild(document.createTextNode(day.title));
+  if (day.date) { var dl = document.createElement('span'); dl.className = 'date'; dl.textContent = day.date; ti.appendChild(dl); }
   card.appendChild(ti);
 
   function addRow(id, tagText, text, minText, noteText, hot) {
@@ -495,7 +399,8 @@ function refresh(){
   });
   var pct = total ? Math.round(done / total * 100) : 0;
   document.getElementById('bar').style.width = pct + '%';
-  document.getElementById('stat').textContent = '总进度：' + done + ' / ' + total + ' 项（' + pct + '%）　每天视频不超过 35 分钟，敲代码至少 90 分钟';
+  var left = Math.max(0, Math.ceil((new Date(2026, 10, 8) - new Date()) / 86400000));
+  document.getElementById('stat').textContent = '距 11/8 测试还有 ' + left + ' 天　|　完成 ' + done + ' / ' + total + ' 项（' + pct + '%）';
 }
 
 wrap.addEventListener('change', function(e){
